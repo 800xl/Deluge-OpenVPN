@@ -1,0 +1,20 @@
+#!/bin/bash 
+
+#
+# Deluge-openvpn
+#
+
+#
+# Openvpn_check - script pings google every 5 minutes and restart the vpn if no packet is received back
+#
+
+VPN_IP="172.20.32.59" 
+
+while [ 1 > 0 ]; do 
+   sleep 5s
+   T=`ping -m 1 -c 1 -I $VPN_IP www.google.com | grep "packets transmitted"` 
+   if [[ ${T:23:1} != "1" ]] 
+   then
+      service openvpn restart 
+   fi 
+done

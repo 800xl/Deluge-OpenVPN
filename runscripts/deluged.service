@@ -1,0 +1,19 @@
+[Unit]
+Description=Deluge Bittorrent Client Daemon
+After=network-online.target
+
+[Service]
+Type=simple
+User=<user>
+Group=<group>
+UMask=007
+EnvironmentFile=/etc/sysconfig/deluged
+ExecStart=/usr/bin/deluged -d -i ${BIND_TO_IP} -u 127.0.0.1 -c /opt/deluged/etc -l /opt/deluged/logs/deluged.log -L Warning
+
+Restart=on-failure
+
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

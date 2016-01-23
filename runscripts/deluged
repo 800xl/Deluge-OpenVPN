@@ -1,0 +1,2 @@
+# Environment file for deluged.service
+BIND_TO_IP="0.0.0.0"
