@@ -1,0 +1,42 @@
+#
+# Deluge-openvpn
+#
+
+#
+# Downloads all the VPN config files from IPVanish, and creates one multi-server ovpn file from it and stores it at
+# /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+#
+# After completion please edit the file and ensure you have a max of 64 remote servers in the ovpn file
+# As openvpn does not support more than 64 remote servers
+#
+
+wget https://www.ipvanish.com/software/configs/configs.zip --directory-prefix=/opt/deluge-openvpn/etc/ipvanish 
+unzip /opt/deluge-openvpn/etc/ipvanish/configs.zip -d /opt/deluge-openvpn/etc/ipvanish
+rm -rf /opt/deluge-openvpn/etc/ipvanish/config.zip
+mv /opt/deluge-openvpn/etc/ipvanish/ca.ipvanish.com.crt /opt/deluge-openvpn/ca/ca.ipvanish.com.crt
+touch /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'client' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'dev tun' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'proto udp' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'resolv-retry infinite' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'nobind' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'persist-key' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'persist-tun' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'persist-remote-ip' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'remote-random' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'resolv-retry 60' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'server-poll-timeout 2' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+cat /opt/deluge-openvpn/etc/ipvanish/*.ovpn | grep -E '.*(^remote\ )' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'comp-lzo' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'verb 3' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'auth SHA256' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'cipher AES-256-CBC' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'keysize 256' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+echo 'tls-cipher TLS-RSA-WITH-AES-256-CBC-SHA' >> /opt/deluge-openvpn/ovpn/ipvanish.ovpn
+
+clear
+echo ''
+echo 'Please edit /opt/deluge-openvpn/ovpn/ipvanish.ovpn and ensure you have a max of 64 remote servers in the ovpn file'
+echo 'Openvpn not support more than 64 remote servers in the ovpn file as multi-server'
+echo ''
+

@@ -1,0 +1,30 @@
+[Unit]
+Description=OpenVPN Robust And Highly Flexible Tunneling Application
+After=syslog.target network.target
+
+[Service]
+PrivateTmp=true
+Type=forking
+PIDFile=/var/run/openvpn/openvpn.pid
+
+# When EnvironmentFile cannot be loaded use the below Environment variables
+Environment=OVPN_CONF="/opt/deluge-openvpn/etc/deluge-openvpn.conf"
+Environment=OVPN_AUTH="/opt/deluge-openvpn/etc/openvpn_auth.conf" 
+Environment=OVPN_CA="/opt/deluge-openvpn/ca/ca.ipvanish.com.crt"     
+Environment=OVPN_S_UP="/opt/deluge-openvpn/bin/openvpn_up.sh" 
+Environment=OVPN_S_DOWN="/opt/deluge-openvpn/bin/openvpn_down.sh"     
+Environment=OVPN_S_CHECK="/opt/deluge-openvpn/bin/openvpn_check" 
+Environment=OVPN_S_SELECT="/opt/deluge-openvpn/bin/openvpn_selectconf.sh"
+Environment=OVPN_OPTIONS="--script-security 2 --route-nopull"   
+Environment=OVPN_PID="/var/run/openvpn/openvpn.pid"
+Environment=OVPN_PATH="/opt/deluge-openvpn/ovpn"
+Environment=OVPN_VPNCONF="/opt/deluge-openvpn/ovpn/ipvanish.ovpn"
+EnvironmentFile=/opt/deluge-openvpn/etc/deluge-openvpn.conf
+
+# Optional - When multiple .ovpn files are found in /opt/deluge-openvpn/ovpn select one randomly on start
+ExecStartPre=/opt/deluge-openvpn/bin/openvpn_selectconf.sh
+
+ExecStart=/usr/sbin/openvpn --daemon $OVPN_OPTIONS --up $OVPN_S_UP --auth-user-pass $OVPN_AUTH --down $OVPN_S_DOWN --ca $OVPN_CA --writepid $OVPN_PID --cd $OVPN_PATH --config $OVPN_VPNCONF
+
+[Install]
+WantedBy=multi-user.target
